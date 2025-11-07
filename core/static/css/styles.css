@@ -1035,3 +1035,43 @@ body {
         font-size: 1.3rem;
     }
 }
+
+/* === Smooth Fade & Entrance Animations === */
+.animate-in {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+section,
+.service-card,
+.portfolio-card {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+/* === Fade for Messages === */
+#messages .alert {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#messages .alert.fade {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* === Scroll-to-Top Button Enhancement === */
+.scroll-to-top {
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* === Project Entry Animation (already exists but enhanced) === */
+
+.portfolio-card.new-project {
+    animation: fadeInUp 0.7s ease-out forwards;
+}
+
+/* === Navbar transition improvement === */
+.navbar {
+    transition: background 0.4s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}

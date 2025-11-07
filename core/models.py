@@ -2,6 +2,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
+from django.core.validators import RegexValidator
 
 
 class Service(models.Model):
@@ -60,7 +61,10 @@ class TeamMember(models.Model):
 
 class Contact(models.Model):
     name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی", validators=[MinLengthValidator(2)])
-    phone = models.CharField(max_length=15, verbose_name="تلفن")
+    phone = models.CharField(
+        max_length=15,
+        validators=[RegexValidator(r'^\+?[\d\- ]{7,15}$', 'شماره تلفن معتبر وارد کنید')]
+    )
     message = models.TextField(verbose_name="پیام", validators=[MinLengthValidator(5)])
     created_at = models.DateTimeField(default=timezone.now, verbose_name="تاریخ ارسال")
 

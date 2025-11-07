@@ -1,4 +1,3 @@
-# core/views.py
 import re
 import logging
 from django.contrib import messages
@@ -15,10 +14,26 @@ def index(request):
     team = TeamMember.objects.all()
     form = ContactForm(request.POST or None)
 
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, "✅ پیام شما با موفقیت ارسال شد!")
-        return redirect('core:index')  # پاک کردن فرم و نمایش پیام
+    if request.method == 'POST':
+        if form.is_valid():
+            # پاک‌سازی داده‌ها
+            contact = form.save(commit=False)
+            contact.name = re.sub(r'\s+', ' ', contact.name.strip())
+            contact.phone = contact.phone.strip()
+            contact.message = re.sub(r'\s+', ' ', contact.message.strip())
+            contact.save()
+
+            # ثبت در لاگ
+            logger.info(f"📨 پیام جدید از {contact.name} ({contact.phone}) در تاریخ {contact.created_at}")
+
+            # پیام موفقیت برای کاربر
+            messages.success(request, "✅ پیام شما با موفقیت ارسال شد!")
+            return redirect('core:index')
+
+        else:
+            # ثبت خطا در لاگ برای بررسی‌های بعدی
+            logger.warning(f"❌ خطا در ارسال فرم تماس: {form.errors.as_json()}")
+            messages.error(request, "⚠️ لطفاً اطلاعات را به درستی وارد کنید.")
 
     context = {
         'services': services,

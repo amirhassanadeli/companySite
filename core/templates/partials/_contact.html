@@ -37,19 +37,6 @@
                 <div class="contact-form-card p-4 rounded shadow-sm">
                     <h4 class="contact-form-title mb-4">پیام مستقیم</h4>
 
-                    <!-- نمایش پیام موفقیت -->
-                    {% if messages %}
-                        <div id="messages">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
                     <form method="POST">
                         {% csrf_token %}
                         {{ form.as_p }}

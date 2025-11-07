@@ -1,88 +1,111 @@
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('Portfolio website loaded successfully!');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Portfolio website loaded successfully!');
 
-    // --- Smooth Scrolling ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+    // === Smooth Scrolling ===
+    document.body.addEventListener('click', e => {
+        const link = e.target.closest('a[href^="#"]');
+        if (!link) return;
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
-        });
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 
-    // --- Navbar Effect ---
+    // === Navbar Scroll Effect (with throttle) ===
     const navbar = document.querySelector('.navbar');
-    window.addEventListener('scroll', () => {
+    const updateNavbar = () => {
         if (!navbar) return;
-        navbar.style.background = window.scrollY > 50
+        const scrolled = window.scrollY > 50;
+        navbar.style.background = scrolled
             ? 'rgba(10, 10, 10, 0.98)'
             : 'rgba(10, 10, 10, 0.95)';
         navbar.style.backdropFilter = 'blur(20px)';
-    });
+    };
+    const throttle = (fn, delay = 100) => {
+        let last = 0;
+        return (...args) => {
+            const now = Date.now();
+            if (now - last >= delay) {
+                last = now;
+                fn(...args);
+            }
+        };
+    };
+    window.addEventListener('scroll', throttle(updateNavbar, 150));
 
-    // --- Counter Animation ---
-    function animateCounters() {
+    // === Counter Animation ===
+    let countersAnimated = false;
+    const animateCounters = () => {
+        if (countersAnimated) return;
+        countersAnimated = true;
         document.querySelectorAll('.stat-number').forEach(counter => {
-            const target = parseInt(counter.textContent);
+            const target = parseInt(counter.textContent, 10) || 0;
             let current = 0;
-            const duration = 1000; // ۱ ثانیه
             const steps = 30;
             const increment = target / steps;
-            let stepCount = 0;
+            const duration = 1000;
+            let step = 0;
 
             const timer = setInterval(() => {
-                stepCount++;
+                step++;
                 current += increment;
-                if (stepCount >= steps) {
-                    counter.textContent = target + '+';
-                    clearInterval(timer);
-                } else {
-                    counter.textContent = Math.floor(current) + '+';
-                }
+                counter.textContent = (step >= steps ? target : Math.floor(current)) + '+';
+                if (step >= steps) clearInterval(timer);
             }, duration / steps);
         });
-    }
+    };
 
-
-    // --- Scroll to Top ---
+    // === Scroll To Top Button ===
     const scrollBtn = document.createElement('button');
-    scrollBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
     scrollBtn.className = 'scroll-to-top';
+    scrollBtn.setAttribute('aria-label', 'Scroll to top');
+    scrollBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
     document.body.appendChild(scrollBtn);
 
-    window.addEventListener('scroll', () => {
-        scrollBtn.classList.toggle('show', window.pageYOffset > 300);
-    });
-
     scrollBtn.addEventListener('click', () => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // --- Intersection Observer ---
-    const observer = new IntersectionObserver((entries) => {
+    const toggleScrollBtn = () => {
+        scrollBtn.classList.toggle('show', window.pageYOffset > 300);
+    };
+    window.addEventListener('scroll', throttle(toggleScrollBtn, 150));
+
+    // === Intersection Observer for Animations ===
+    const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
-            if (entry.target.classList.contains('hero-section')) animateCounters();
-            entry.target.classList.add('animate-in');
-            observer.unobserve(entry.target);
-        });
-    }, {threshold: 0.1});
-    document.querySelectorAll('section, .service-card, .portfolio-card').forEach(el => observer.observe(el));
 
-    // --- Portfolio Animations ---
+            const el = entry.target;
+            el.classList.add('animate-in');
+
+            if (el.classList.contains('hero-section')) animateCounters();
+
+            observer.unobserve(el);
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section, .service-card, .portfolio-card').forEach(el => {
+        observer.observe(el);
+    });
+
+    // === Portfolio Card Animation ===
     document.querySelectorAll('.portfolio-card').forEach((card, i) => {
         card.style.animationDelay = `${i * 0.1}s`;
         card.classList.add('new-project');
-        card.addEventListener('click', e => {
-            if (!e.target.closest('a') && !e.target.closest('button')) {
-                card.style.transform = 'scale(0.95)';
-                setTimeout(() => card.style.transform = '', 150);
-            }
-        });
     });
 
+    document.body.addEventListener('click', e => {
+        const card = e.target.closest('.portfolio-card');
+        if (!card) return;
+        if (e.target.closest('a, button')) return;
 
-    // --- Auto remove Django messages ---
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => (card.style.transform = ''), 150);
+    });
+
+    // === Auto Remove Django Messages ===
     document.querySelectorAll('#messages .alert').forEach(alert => {
         setTimeout(() => {
             alert.classList.remove('show');
