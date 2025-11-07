@@ -27,9 +27,9 @@ class TeamMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'phone', 'created_at')
+    list_display = ('name', 'phone', 'created_at')
     list_filter = ('created_at',)
-    search_fields = ('full_name', 'phone', 'message')
+    search_fields = ('name', 'phone', 'message')
     readonly_fields = ('created_at',)
     actions = ['mark_as_read']
 

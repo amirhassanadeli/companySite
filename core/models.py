@@ -59,7 +59,7 @@ class TeamMember(models.Model):
 
 
 class Contact(models.Model):
-    full_name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی", validators=[MinLengthValidator(2)])
+    name = models.CharField(max_length=100, verbose_name="نام و نام خانوادگی", validators=[MinLengthValidator(2)])
     phone = models.CharField(max_length=15, verbose_name="تلفن")
     message = models.TextField(verbose_name="پیام", validators=[MinLengthValidator(5)])
     created_at = models.DateTimeField(default=timezone.now, verbose_name="تاریخ ارسال")
@@ -70,4 +70,4 @@ class Contact(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.full_name} - {self.phone}"
+        return f"{self.name} - {self.phone}"

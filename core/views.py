@@ -43,7 +43,7 @@ def contact_view(request):
         if errors:
             return JsonResponse({'success': False, 'errors': errors}, status=400)
 
-        Contact.objects.create(full_name=name, phone=phone, message=message)
+        Contact.objects.create(name=name, phone=phone, message=message)
         logger.info(f"New contact: {name} - {phone}")
 
         return JsonResponse({
