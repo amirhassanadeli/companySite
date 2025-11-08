@@ -3,16 +3,23 @@
 
 {% block content %}
 
-    <!-- Hero Section -->
+    {% if messages %}
+        <div id="messages" class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% include 'partials/_hero.html' %}
 
-    <!-- Services Section -->
     {% include 'partials/_services.html' %}
 
-    <!-- Portfolio Section -->
     {% include 'partials/_portfolio.html' %}
 
-    <!-- Contact Section -->
     {% include 'partials/_contact.html' %}
 
 {% endblock %}
