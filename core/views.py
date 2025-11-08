@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 def index(request):
+    messages.success(request, "تست: پیام موفقیت‌آمیز نمایش داده شد!")  # تست دستی
+
     services = Service.objects.all()
     projects = Project.objects.all()
     team = TeamMember.objects.all()
